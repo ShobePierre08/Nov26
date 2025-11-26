@@ -1,10 +1,14 @@
 import Phaser from "phaser";
+import { Tray } from "../components/Tray.jsx";
 import cpuSocketClosed from "../assets/components/cpu/cpuSocket.png";
 import cpuSocketGlow from "../assets/components/cpu/cpuSocketGlow.png";
 import cpuSocketOpen from "../assets/components/cpu/cpuSocketOpen.png";
 import cpuInstalled from "../assets/components/cpu/cpuInstalled.png";
 import cpuLast from "../assets/components/cpu/cpuSocketwCPU.png";
 import cpuImg from "../assets/components/cpu/cpu.png";
+import ramImg from "../assets/components/ram/ram.png";
+import cmosImg from "../assets/components/cmos/cmosbatt.png";
+import backgroundImg from "../assets/background.png";
 
 export default class CpuScene extends Phaser.Scene {
   constructor() {
@@ -12,7 +16,11 @@ export default class CpuScene extends Phaser.Scene {
   }
 
   preload() {
+    this.load.image("background", backgroundImg);
     this.load.image("cpu", cpuImg);
+    this.load.image("ram", ramImg);
+    this.load.image("cmos", cmosImg);
+
     this.load.image("cpuSocketClosed", cpuSocketClosed);
     this.load.image("cpuSocketGlow", cpuSocketGlow);
     this.load.image("cpuSocketOpen", cpuSocketOpen);
@@ -23,119 +31,150 @@ export default class CpuScene extends Phaser.Scene {
   create() {
     this.buildStep = 0;
     this.onCheckpointComplete = this.game.onCheckpointComplete;
-    this.savedCheckpoints = this.game.savedCheckpoints;
+    this.savedCheckpoints = this.game.savedCheckpoints || {};
 
-    const bg = this.add.image(this.scale.width / 2, this.scale.height / 2, "background");
-    bg.setDisplaySize(this.scale.width, this.scale.height);
+    // Check if CPU is already completed
+    const isCpuCompleted = this.savedCheckpoints?.cpu?.completed ?? false;
+
+    const bg = this.add.image(this.scale.width / 2, this.scale.height / 2, "background")
+      .setDisplaySize(this.scale.width, this.scale.height);
 
     this.instructionText = this.add.text(
       this.scale.width / 2,
       this.scale.height * 0.08,
-      "Open the CPU Socket",
-      { fontSize: "32px", color: "#ffffff", fontStyle: "bold" }
+      isCpuCompleted ? "CPU Already Installed - Task Complete!" : "Open the CPU Socket",
+      { fontSize: "32px", color: isCpuCompleted ? "#00ff00" : "#ffffff", fontStyle: "bold" }
     ).setOrigin(0.5);
 
+    // Socket setup
     const slotW = this.scale.width * 0.38;
     const slotH = this.scale.height * 0.7;
+    const socketX = this.scale.width * 0.5;
+    const socketY = this.scale.height * 0.5;
 
-    this.socket = this.add.image(
-      this.scale.width * 0.5,
-      this.scale.height * 0.5,
-      "cpuSocketClosed"
-    ).setDisplaySize(slotW, slotH);
+    this.socket = this.add.image(socketX, socketY, isCpuCompleted ? "cpuLast" : "cpuSocketClosed")
+      .setDisplaySize(slotW, slotH);
 
-    this.socketGlow = this.add.image(this.socket.x, this.socket.y, "cpuSocketGlow")
+    // Only make interactive if not completed
+    if (!isCpuCompleted) {
+      this.socket.setInteractive({ pixelPerfect: true, alphaTolerance: 1 });
+    }
+
+    this.socketGlow = this.add.image(socketX, socketY, "cpuSocketGlow")
       .setDisplaySize(slotW, slotH)
       .setAlpha(0);
 
-    this.socket.setInteractive({
-      pixelPerfect: true,
-      alphaTolerance: 1
-    });
+    // Only setup hover/click if not completed
+    if (!isCpuCompleted) {
+      // Hover glow
+      this.socket.on("pointerover", () => {
+        if (this.buildStep === 0 || this.buildStep === 2) this.socketGlow.setAlpha(1);
+      });
+      this.socket.on("pointerout", () => {
+        if (this.buildStep === 0 || this.buildStep === 2) this.socketGlow.setAlpha(0);
+      });
 
-    // Hover effect
-    this.socket.on("pointerover", () => {
-      if (this.buildStep === 0 || this.buildStep === 2) this.socketGlow.setAlpha(1);
-    });
-    this.socket.on("pointerout", () => {
-      if (this.buildStep === 0 || this.buildStep === 2) this.socketGlow.setAlpha(0);
-    });
+      // Socket click handler
+      this.socket.on("pointerdown", () => {
+        if (this.buildStep === 0) {
+          // Open socket
+          this.buildStep = 1;
+          this.socket.setTexture("cpuSocketOpen");
+          this.instructionText.setText("Select the CPU from the tray");
 
-    // Click interaction
-    this.socket.on("pointerdown", () => {
-      if (this.buildStep === 0) {
-        // Open the socket
-        this.buildStep = 1;
-        this.socket.setTexture("cpuSocketOpen");
-        this.instructionText.setText("Insert the Component");
-        this.socketGlow.setAlpha(0);
-      } else if (this.buildStep === 2) {
-        // Close the socket after CPU installed
-        this.buildStep = 3;
-        this.installedCpu.setTexture("cpuLast");
-        this.instructionText.setText("CPU Installed and Socket Closed!");
-        this.socketGlow.setAlpha(0);
-        
-        // Emit checkpoint completion
-        console.log("CPU checkpoint emitting:", { component: "cpu", progress: 100, isCompleted: true });
-        if (this.onCheckpointComplete) {
-          this.onCheckpointComplete("cpu", 100, true);
-        } else {
-          console.warn("onCheckpointComplete not available");
+          // Hide glow immediately
+          this.socketGlow.setAlpha(0);
+
+          // Show tray (draggables)
+          this.showTray();
+        } else if (this.buildStep === 2) {
+          // Close socket after CPU installed
+          this.buildStep = 3;
+          this.installedCpu.setTexture("cpuLast");
+          this.instructionText.setText("CPU Installed and Socket Closed!");
+          this.socketGlow.setAlpha(0);
+
+          if (this.onCheckpointComplete) {
+            this.onCheckpointComplete("cpu", 100, true);
+          }
+
+          // Auto-return to menu
+          this.time.delayedCall(2000, () => this.scene.start("menu-scene"));
         }
-      }
+      });
+    } else {
+      // If completed, show a message and auto-return after delay
+      this.time.delayedCall(3000, () => this.scene.start("menu-scene"));
+    }
+
+    // Back button
+    this.add.text(50, 50, "← Back", { fontSize: "20px", color: "#ffffff" })
+      .setInteractive()
+      .on("pointerdown", () => this.scene.start("menu-scene"));
+  }
+
+  showTray() {
+    const components = [
+      { key: "cpu", correct: true },
+      { key: "ram", correct: false },
+      { key: "cmos", correct: false },
+    ];
+
+    this.tray = new Tray(this, components, {
+      position: 'right',
+      width: this.scale.width * 0.2,
     });
 
-    // CPU draggable
-    const cpuW = this.scale.width * 0.1;
-    const cpuH = this.scale.height * 0.20;
-    this.cpu = this.add.image(this.scale.width * 0.2, this.scale.height * 0.8, "cpu")
-      .setDisplaySize(cpuW, cpuH)
-      .setInteractive();
+    this.tray.show();
+    this.draggables = this.tray.getDraggables();
 
-    this.input.setDraggable(this.cpu);
-
+    // Drag events
     this.input.on("drag", (pointer, obj, dragX, dragY) => {
       if (this.buildStep !== 1) return;
       obj.x = dragX;
       obj.y = dragY;
     });
 
-    this.input.on("dragend", (pointer, obj, dropped) => {
+    this.input.on("dragend", (pointer, obj) => {
       if (this.buildStep !== 1) return;
-      if (!dropped) {
-        obj.x = this.scale.width * 0.2;
-        obj.y = this.scale.height * 0.8;
+
+      // Drop detection using world coordinates
+      const dropZoneX = this.socket.x;
+      const dropZoneY = this.socket.y;
+      const dropZoneW = this.socket.displayWidth * 0.5;
+      const dropZoneH = this.socket.displayHeight * 0.5;
+
+      if (
+        obj.x > dropZoneX - dropZoneW / 2 &&
+        obj.x < dropZoneX + dropZoneW / 2 &&
+        obj.y > dropZoneY - dropZoneH / 2 &&
+        obj.y < dropZoneY + dropZoneH / 2
+      ) {
+        if (obj.componentData.correct) {
+          // Correct drop
+          obj.destroy();
+          this.buildStep = 2;
+
+          this.installedCpu = this.add.image(
+            this.socket.x,
+            this.socket.y,
+            "cpuInstalled"
+          ).setDisplaySize(this.socket.displayWidth, this.socket.displayHeight);
+
+          this.instructionText.setText("Close the CPU Socket!");
+          this.socketGlow.setAlpha(1);
+        } else {
+          // Wrong drop → red flash
+          this.socketGlow.setTint(0xff0000);
+          this.time.delayedCall(500, () => this.socketGlow.clearTint());
+
+          // Reset position to tray
+          this.tray.resetComponentPosition(obj);
+        }
+      } else {
+        // Not dropped in zone → reset to tray
+        this.tray.resetComponentPosition(obj);
       }
     });
-
-    // Drop zone
-    this.dropZone = this.add.zone(this.socket.x, this.socket.y, slotW * 0.5, slotH * 0.5)
-      .setRectangleDropZone(slotW * 0.5, slotH * 0.5);
-
-    // Drop event
-    this.input.on("drop", (_, obj, zone) => {
-      if (this.buildStep !== 1) return;
-      if (zone !== this.dropZone) return;
-
-      obj.destroy(); // remove draggable CPU
-
-      this.buildStep = 2; // CPU inserted, socket still open
-
-      // Show installed CPU image
-      this.installedCpu = this.add.image(
-        this.socket.x,
-        this.socket.y,
-        "cpuInstalled"
-      ).setDisplaySize(slotW, slotH);
-
-      this.instructionText.setText("Close the CPU Socket!");
-      this.socketGlow.setAlpha(1); // glow to indicate click action
-    });
-
-    // Back button
-    this.add.text(50, 50, "← Back", { fontSize: "20px", color: "#ffffff" })
-      .setInteractive()
-      .on("pointerdown", () => this.scene.start("menu-scene"));
   }
 }
