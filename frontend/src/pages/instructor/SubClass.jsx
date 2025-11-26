@@ -163,9 +163,7 @@ function SubClass() {
   }, [isCreateMenuOpen]);
 
   const createMenuItems = [
-    { label: "Assignment", description: "Share updates with everyone" },
-    { label: "Quiz Announcement", description: "Ask short formative questions" },
-    { label: "Reuse Activity", description: "Bring back a previous post" },
+    { label: "Assignment", description: "Share updates with everyone" }
   ];
 
   const goToFeature = (title, description) => {
@@ -1137,17 +1135,6 @@ function SubClass() {
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
-              <button
-                onClick={() =>
-                  goToFeature(
-                    "Class Settings",
-                    "Manage class preferences, update course details, and configure collaboration options in one place."
-                  )
-                }
-                className="px-4 py-2 rounded-lg border border-blue-500 text-blue-600 font-medium hover:bg-blue-50 transition"
-              >
-                Class settings
-              </button>
               <button
                 onClick={() => setIsShareInviteOpen(true)}
                 className="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 transition"

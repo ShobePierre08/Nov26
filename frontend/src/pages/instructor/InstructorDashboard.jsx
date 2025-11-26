@@ -283,12 +283,12 @@ function DashboardPage() {
 
         {/* ✅ Main Content */}
         <main 
-          className="flex-grow flex flex-col p-10"
+          className="flex-grow flex flex-col p-10 mt-22"
           onClick={() => setOpenMenuId(null)}
         >
           {/* Greeting */}
           {message && (
-            <p className="text-gray-700 text-lg mb-6 font-medium tracking-wide text-center">
+            <p className="text-[#E4080A] text-lg mb-6 font-medium tracking-wide text-center">
               {message}
             </p>
           )}

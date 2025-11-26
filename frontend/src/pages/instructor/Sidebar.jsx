@@ -91,7 +91,7 @@ function Sidebar({ isOpen, onClose }) {
           <div className="flex items-center justify-center gap-2">
             {!isEditingName ? (
               <>
-                <h2 className="text-2xl font-bold text-blue-600">{username}</h2>
+                <h2 className="text-2xl font-bold text-[#19A5EA]">{username}</h2>
                 <button onClick={() => { setEditingName(username); setIsEditingName(true); }} className="text-gray-400 hover:text-gray-600 ml-1" title="Edit name">✎</button>
               </>
             ) : (

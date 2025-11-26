@@ -366,45 +366,6 @@ function ActivityBuilder({
                 rows={8}
                 className="w-full px-4 py-3 border-0 rounded-t-lg focus:outline-none text-gray-800 resize-none"
               />
-              {/* Formatting Toolbar */}
-              <div className="border-t border-gray-200 px-4 py-2 flex items-center gap-2">
-                <button
-                  className="p-1.5 hover:bg-gray-100 rounded transition"
-                  title="Bold"
-                >
-                  <span className="font-bold text-gray-700 text-sm">B</span>
-                </button>
-                <button
-                  className="p-1.5 hover:bg-gray-100 rounded transition"
-                  title="Italic"
-                >
-                  <span className="italic text-gray-700 text-sm">I</span>
-                </button>
-                <button
-                  className="p-1.5 hover:bg-gray-100 rounded transition"
-                  title="Underline"
-                >
-                  <span className="underline text-gray-700 text-sm">U</span>
-                </button>
-                <button
-                  className="p-1.5 hover:bg-gray-100 rounded transition"
-                  title="Bullet List"
-                >
-                  <svg
-                    className="w-4 h-4 text-gray-700"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM4 15a1 1 0 100 2h12a1 1 0 100-2H4z" />
-                  </svg>
-                </button>
-                <button
-                  className="p-1.5 hover:bg-gray-100 rounded transition"
-                  title="Strikethrough"
-                >
-                  <span className="line-through text-gray-700 text-sm">X</span>
-                </button>
-              </div>
             </div>
           </div>
 

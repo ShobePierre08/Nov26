@@ -300,13 +300,13 @@ function StudentDashboard() {
           <div className="flex items-center justify-center gap-2">
             {!isEditingName ? (
               <>
-                <h2 className="text-3xl font-bold text-blue-600 tracking-wide">{username}</h2>
+                <h2 className="text-3xl font-bold text-[#19A5EA] tracking-wide">{username}</h2>
                 <button onClick={() => { setEditingName(username); setIsEditingName(true); }} className="text-gray-400 hover:text-gray-600 ml-1" title="Edit name">✎</button>
               </>
             ) : (
               <input
                 autoFocus
-                className="text-3xl font-bold text-blue-600 tracking-wide text-center outline-none"
+                className="text-3xl font-bold text-[#19A5EA] tracking-wide text-center outline-none"
                 value={editingName}
                 onChange={(e) => setEditingName(e.target.value)}
                 onKeyDown={(e) => {
@@ -409,7 +409,7 @@ function StudentDashboard() {
           onLogout={handleLogout}
         />
 
-        <main className="flex-grow p-6 md:p-10 pt-28 md:pt-24 relative md:ml-72">
+        <main className="flex-grow p-6 md:p-10 pt-28 md:pt-31 relative md:ml-72">
           {/* Join Class + Notifications Buttons */}
           <div className="absolute top-28 right-10 z-50 flex items-center gap-3">
             <div className="relative">
@@ -441,48 +441,6 @@ function StudentDashboard() {
           <h1 className="text-3xl font-bold text-gray-800 mb-10 text-center drop-shadow-sm">
             Welcome, Student!
           </h1>
-
-          {/* Games & Activities Section (new compact card layout) */}
-          <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-sm p-8 mb-12">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6">Explore</h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div
-                onClick={() => navigate('/student/dashboard')}
-                className="rounded-xl p-4 flex items-center gap-4 shadow-md cursor-pointer"
-                style={{
-                  background: "linear-gradient(90deg,#E0EAFC 0%,#D9E9FB 50%,#CFDEF3 100%)",
-                  color: "#0f172a",
-                  boxShadow: "0 10px 25px rgba(13,78,155,0.06)",
-                }}
-              >
-                <div className="h-12 w-12 rounded-lg flex items-center justify-center bg-white border border-white/60">
-                  <span className="text-xl">🎮</span>
-                </div>
-                <div>
-                  <div className="text-sm font-semibold">Games</div>
-                  <div className="text-xs mt-1 opacity-80">Play and learn with fun interactive games.</div>
-                </div>
-              </div>
-
-              <div
-                className="rounded-xl p-4 flex items-center gap-4 shadow-md cursor-pointer"
-                style={{
-                  background: "linear-gradient(90deg,#E0EAFC 0%,#D9E9FB 50%,#CFDEF3 100%)",
-                  color: "#0f172a",
-                  boxShadow: "0 10px 25px rgba(13,78,155,0.06)",
-                }}
-              >
-                <div className="h-12 w-12 rounded-lg flex items-center justify-center bg-white border border-white/60">
-                  <span className="text-xl">🧩</span>
-                </div>
-                <div>
-                  <div className="text-sm font-semibold">Activities</div>
-                  <div className="text-xs mt-1 opacity-80">Explore activities and interactive lessons.</div>
-                </div>
-              </div>
-            </div>
-          </div>
 
           {/* My Classes Section */}
           <section>

@@ -18,9 +18,8 @@ import Setting from "./pages/student/Setting";
 import InstructorSetting from "./pages/instructor/Setting";
 
 // 🧑‍🏫 Instructor pages (optional for now){}
-import InstructorDashboard from "./pages/instructor/InstructorDashboard"; // 🆕 placeholder
+import InstructorDashboard from "./pages/instructor/InstructorDashboard"; 
 import SubClass from "./pages/instructor/SubClass";
-import FeaturePlaceholder from "./pages/instructor/FeaturePlaceholder";
 import Archived_Instructor from "./pages/instructor/Archived";
 
 // 🧱 Other components/features
@@ -136,16 +135,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/instructor/feature"
-          element={
-            <ProtectedRoute allowedRoles={[2]}>
-              <FeaturePlaceholder />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Content Management removed */}
 
         <Route
           path="/instructor/archived"
