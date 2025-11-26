@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 25, 2025 at 10:30 PM
+-- Generation Time: Nov 26, 2025 at 07:55 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -47,7 +47,8 @@ INSERT INTO `activities` (`activity_id`, `subject_id`, `instructor_id`, `title`,
 (1, 10, 1, 'Build PC', 'Sim Pc', 'dragdrop', '{\"activity_name\":\"Sim Pc\",\"instructions\":\"Build PC\",\"open_date_time\":\"2025-11-25T18:49:00.000Z\",\"due_date_time\":\"2025-11-26T18:49:00.000Z\",\"time_limit\":\"2 hours\"}', '2025-11-25 18:49:38', '2025-11-25 18:49:38'),
 (2, 10, 1, 'Code CHUM', 'CodeLab', 'coding', '{\"activity_name\":\"CodeLab\",\"instructions\":\"ad\",\"open_date_time\":\"2025-11-25T19:18:00.000Z\",\"due_date_time\":\"2025-11-26T19:18:00.000Z\",\"time_limit\":\"1 hour\"}', '2025-11-25 19:18:13', '2025-11-25 19:18:13'),
 (5, 10, 1, 'Testing', 'Experiment', 'other', '{\"activity_name\":\"Experiment\",\"instructions\":\"sss\",\"open_date_time\":\"2025-11-25T19:45:00.000Z\",\"due_date_time\":\"2025-11-26T19:45:00.000Z\",\"time_limit\":\"2 hours\"}', '2025-11-25 19:47:49', '2025-11-25 19:47:49'),
-(6, 15, 1, 'SimPc', 'Sim Pc', 'dragdrop', '{\"activity_name\":\"Sim Pc\",\"instructions\":\"SimPC\",\"open_date_time\":\"2025-11-25T20:46:00.000Z\",\"due_date_time\":\"2025-11-27T20:46:00.000Z\",\"time_limit\":\"2 hours\"}', '2025-11-25 20:46:41', '2025-11-25 20:46:41');
+(12, 15, 1, '123', 'Quiz', 'quiz', '{\"activity_name\":\"Quiz\",\"instructions\":\"123\",\"open_date_time\":\"2025-11-26T18:51:00.000Z\",\"due_date_time\":\"2025-11-27T18:51:00.000Z\",\"time_limit\":\"1 hour\"}', '2025-11-26 18:51:48', '2025-11-26 18:51:48'),
+(13, 15, 1, '321', 'Sim Pc', 'dragdrop', '{\"activity_name\":\"Sim Pc\",\"instructions\":\"321\",\"open_date_time\":\"2025-11-26T18:51:00.000Z\",\"due_date_time\":\"2025-11-27T18:52:00.000Z\",\"time_limit\":\"2 hours\"}', '2025-11-26 18:52:10', '2025-11-26 18:52:10');
 
 -- --------------------------------------------------------
 
@@ -103,6 +104,7 @@ CREATE TABLE `activity_submissions` (
   `submission_text` longtext DEFAULT NULL,
   `grade` decimal(5,2) DEFAULT NULL,
   `feedback` text DEFAULT NULL,
+  `checkpoint_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`checkpoint_data`)),
   `submitted_at` datetime DEFAULT current_timestamp(),
   `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -111,10 +113,12 @@ CREATE TABLE `activity_submissions` (
 -- Dumping data for table `activity_submissions`
 --
 
-INSERT INTO `activity_submissions` (`submission_id`, `activity_id`, `student_id`, `submission_text`, `grade`, `feedback`, `submitted_at`, `updated_at`) VALUES
-(1, 1, 2, 'SimPC activity completed. Time taken: 00:00:10', NULL, NULL, '2025-11-26 03:42:13', '2025-11-26 04:00:13'),
-(2, 5, 2, '2121', NULL, NULL, '2025-11-26 03:48:37', '2025-11-26 03:48:37'),
-(3, 2, 2, 'CodeLab activity completed. Time taken: 00:01:24\r\n\r\n--- Code Submitted ---\r\nprint(\"hello world\")\r\n\r\n--- Final Output ---\r\nhello world', NULL, NULL, '2025-11-26 04:22:25', '2025-11-26 04:22:25');
+INSERT INTO `activity_submissions` (`submission_id`, `activity_id`, `student_id`, `submission_text`, `grade`, `feedback`, `checkpoint_data`, `submitted_at`, `updated_at`) VALUES
+(1, 1, 2, 'SimPC activity completed. Time taken: 00:00:10', NULL, NULL, NULL, '2025-11-26 03:42:13', '2025-11-26 04:00:13'),
+(2, 5, 2, '2121', NULL, NULL, NULL, '2025-11-26 03:48:37', '2025-11-26 03:48:37'),
+(3, 2, 2, 'CodeLab activity completed. Time taken: 00:01:24\r\n\r\n--- Code Submitted ---\r\nprint(\"hello world\")\r\n\r\n--- Final Output ---\r\nhello world', NULL, NULL, NULL, '2025-11-26 04:22:25', '2025-11-26 04:22:25'),
+(9, 12, 2, '321', NULL, NULL, NULL, '2025-11-27 02:52:31', '2025-11-27 02:52:31'),
+(10, 13, 2, 'SimPC activity completed. Time taken: 00:00:20', NULL, NULL, '{\"cpu\":{\"completed\":true,\"progress\":100,\"timestamp\":\"2025-11-26T18:52:41.645Z\"},\"cmos\":{\"completed\":true,\"progress\":100,\"timestamp\":\"2025-11-26T18:52:53.421Z\"},\"ram\":{\"completed\":true,\"progress\":100,\"timestamp\":\"2025-11-26T18:52:47.525Z\"}}', '2025-11-27 02:52:41', '2025-11-27 02:52:56');
 
 -- --------------------------------------------------------
 
@@ -138,7 +142,8 @@ CREATE TABLE `activity_submission_attachments` (
 --
 
 INSERT INTO `activity_submission_attachments` (`attachment_id`, `submission_id`, `original_name`, `stored_name`, `file_path`, `mime_type`, `file_size`, `uploaded_at`) VALUES
-(1, 2, 'IAAS2_Midterm Activity No 1.docx', '1764100117534-194156734-IAAS2_Midterm Activity No 1.docx', '/uploads/activity_files/1764100117534-194156734-IAAS2_Midterm Activity No 1.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 337604, '2025-11-26 03:48:37');
+(1, 2, 'IAAS2_Midterm Activity No 1.docx', '1764100117534-194156734-IAAS2_Midterm Activity No 1.docx', '/uploads/activity_files/1764100117534-194156734-IAAS2_Midterm Activity No 1.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 337604, '2025-11-26 03:48:37'),
+(5, 9, 'Untitled.png', '1764183151773-235564349-Untitled.png', '/uploads/activity_files/1764183151773-235564349-Untitled.png', 'image/png', 517297, '2025-11-27 02:52:31');
 
 -- --------------------------------------------------------
 
@@ -483,13 +488,13 @@ ALTER TABLE `user_avatars`
 -- AUTO_INCREMENT for table `activities`
 --
 ALTER TABLE `activities`
-  MODIFY `activity_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `activity_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `activities_classwork`
 --
 ALTER TABLE `activities_classwork`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `activity_items`
@@ -501,13 +506,13 @@ ALTER TABLE `activity_items`
 -- AUTO_INCREMENT for table `activity_submissions`
 --
 ALTER TABLE `activity_submissions`
-  MODIFY `submission_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `submission_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `activity_submission_attachments`
 --
 ALTER TABLE `activity_submission_attachments`
-  MODIFY `attachment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `attachment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `announcements`
