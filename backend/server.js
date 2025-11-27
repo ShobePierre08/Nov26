@@ -4,12 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const app = express();
 const routes = require('./routes');
-
 require('./config/db'); 
-const { createTables } = require('./config/init-db');
-
-// Initialize database tables
-createTables();
 
 app.use(cors());
 app.use(express.json());
